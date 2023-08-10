@@ -1,0 +1,1 @@
+pyinstaller --onefile --icon=icon_cam.png --add-data "spotlight_logic.py;." spotlight_ui.py
