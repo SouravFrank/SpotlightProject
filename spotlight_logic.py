@@ -8,9 +8,11 @@ from winreg import HKEY_CURRENT_USER, OpenKey, QueryValueEx
 import time
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QPushButton, QMessageBox, QFileDialog
 from PyQt6.QtCore import Qt
+import json
 
 # Global variable to store the destination folder path
 destination_folder = ""
+CONFIG_FILE_PATH = os.path.join(os.environ["APPDATA"], "spotlight_config.json")
 
 def get_spotlight_images():
     spotlight_dir = os.path.join(os.getenv('USERPROFILE'), 'AppData', 'Local', 'Packages', 
@@ -47,10 +49,19 @@ def detect_system_theme():
 
 def copy_spotlight_images():
     global destination_folder  # Access the global variable
+    global CONFIG_FILE_PATH
 
     # If destination folder is not set, ask the user to set it
     if not destination_folder:
-        set_destination_folder()
+        # Initialize the destination folder from the configuration file, if available
+        try:
+            with open(CONFIG_FILE_PATH, "r") as config_file:
+                config = json.load(config_file)
+                destination_folder = config.get("destination_folder")
+        except (FileNotFoundError, json.JSONDecodeError):
+            destination_folder = None
+            set_destination_folder()
+        
         if not destination_folder:
             return
 
@@ -59,7 +70,6 @@ def copy_spotlight_images():
         QMessageBox.critical(None, "Error", "Spotlight images directory not found.")
         return
     
-    # destination_folder = os.path.join(os.path.expanduser("~"), "Desktop", "Spotlight Images")
     if not os.path.exists(destination_folder):
         os.makedirs(destination_folder)
 
@@ -114,9 +124,18 @@ def delete_duplicate_files(destination_folder):
                 os.remove(file_to_delete)
                 # print(f"Deleted duplicate file: {file_to_delete}")
 
+def save_config():
+    global CONFIG_FILE_PATH
+    global destination_folder
+    
+    config = {"destination_folder": destination_folder}
+    with open(CONFIG_FILE_PATH, "w") as config_file:
+        json.dump(config, config_file)
+
 def set_destination_folder():
-    global destination_folder  # Access the global variable
+    global destination_folder
     options = QFileDialog.Option.ShowDirsOnly
     selected_folder = QFileDialog.getExistingDirectory(None, "Select Destination Folder", "", options=options)
     if selected_folder:
-        destination_folder = os.path.join(selected_folder, "Spotlight Images") 
+        destination_folder = os.path.join(selected_folder, "Spotlight Images")
+        save_config()

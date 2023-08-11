@@ -38,12 +38,12 @@ class MainWindow(QMainWindow):
         button_layout = QHBoxLayout(button_frame)
         button_frame.setStyleSheet("background-color: transparent;")
         
-        btn_copy_images = QPushButton("Proceed", self)
+        btn_copy_images = QPushButton("🚀 Proceed", self)
         btn_copy_images.setStyleSheet("font-size: 16px; color: white; background-color: #0078D4; padding: 12px 100px; border-radius: 12px;")
         btn_copy_images.clicked.connect(spotlight_logic.copy_spotlight_images)
         button_layout.addWidget(btn_copy_images)
 
-        set_path_button = QPushButton("Set Destination Folder", self)
+        set_path_button = QPushButton("📁 Set Destination Folder", self)
         set_path_button.setStyleSheet("font-size: 16px; color: white; background-color: #0078D4; padding: 12px 100px; border-radius: 12px;")
         set_path_button.clicked.connect(spotlight_logic.set_destination_folder)
         button_layout.addWidget(set_path_button)
