@@ -1,8 +1,8 @@
-import os
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QPushButton, QMessageBox, QHBoxLayout, QFrame
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFrame
 from PyQt6.QtCore import Qt
 import spotlight_logic
+import spotlight_zipping_logic
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(layout)
 
         title_label = QLabel("Welcome to the Spotlight Image Copy Tool!", self)
-        title_label.setStyleSheet("color: #0078D4; font-size: 24px; font-weight: bold; margin: 20px; margin-left: 100px;")
+        title_label.setStyleSheet("color: #0078D4; font-size: 24px; font-weight: bold; text-align: center;")
         layout.addWidget(title_label)
 
         description_label = QLabel(
@@ -39,14 +39,19 @@ class MainWindow(QMainWindow):
         button_frame.setStyleSheet("background-color: transparent;")
         
         btn_copy_images = QPushButton("🚀 Proceed", self)
-        btn_copy_images.setStyleSheet("font-size: 16px; color: white; background-color: #0078D4; padding: 12px 100px; border-radius: 12px;")
+        btn_copy_images.setStyleSheet("font-size: 16px; color: white; background-color: #0078D4; padding: 12px 60px; border-radius: 12px; border: 1px solid black")
         btn_copy_images.clicked.connect(spotlight_logic.copy_spotlight_images)
         button_layout.addWidget(btn_copy_images)
 
-        set_path_button = QPushButton("📁 Set Destination Folder", self)
-        set_path_button.setStyleSheet("font-size: 16px; color: white; background-color: #0078D4; padding: 12px 100px; border-radius: 12px;")
+        set_path_button = QPushButton("📁 Set location", self)
+        set_path_button.setStyleSheet("font-size: 16px; color: white; background-color: #0078D4; padding: 12px 40px; border-radius: 12px;")
         set_path_button.clicked.connect(spotlight_logic.set_destination_folder)
         button_layout.addWidget(set_path_button)
+                
+        zip_folder_button = QPushButton("🗜️ Zip folder", self)
+        zip_folder_button.setStyleSheet("font-size: 16px; color: white; background-color: #C07800; padding: 12px 40px; border-radius: 12px;")
+        zip_folder_button.clicked.connect(spotlight_zipping_logic.on_create_zip_clicked)
+        button_layout.addWidget(zip_folder_button)
 
         layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
         # layout.addSpacing(20)

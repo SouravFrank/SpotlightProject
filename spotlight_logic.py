@@ -3,11 +3,9 @@ import shutil
 from PIL import Image
 import datetime
 import subprocess
-import random
 from winreg import HKEY_CURRENT_USER, OpenKey, QueryValueEx
 import time
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QPushButton, QMessageBox, QFileDialog
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
 import json
 
 # Global variable to store the destination folder path
@@ -45,7 +43,7 @@ def detect_system_theme():
         theme = QueryValueEx(aReg, "AppsUseLightTheme")[0]
         return theme == 0
     except Exception:
-        return True  # Fallback to light theme if theme detection fails
+        return False  # Fallback to light theme if theme detection fails
 
 def copy_spotlight_images():
     global destination_folder  # Access the global variable
