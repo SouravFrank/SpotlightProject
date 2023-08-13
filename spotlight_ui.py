@@ -1,6 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QFrame
-from PyQt6.QtGui import QPalette, QLinearGradient, QColor, QBrush
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
 from PyQt6.QtCore import Qt
 import spotlight_logic
 import spotlight_zipping_logic
@@ -21,8 +20,6 @@ class MainWindow(QMainWindow):
 
         title_label = spotlight_styles.StyledTitleLabel("Welcome to the Spotlight Image Copy Tool!")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(title_label)
-
         layout.addWidget(title_label)
 
         description_label = QLabel(
@@ -58,7 +55,15 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(zip_folder_button)
 
         layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
-        # layout.addSpacing(20)
+
+        layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        version_label = QLabel("Version 2.0.0", self)
+        version_label.setStyleSheet("font-size: 8px; color: #888;")
+        version_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
+        version_label.setMaximumHeight(16)  # Set maximum height for version_label
+        layout.addWidget(version_label, alignment=Qt.AlignmentFlag.AlignRight)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
