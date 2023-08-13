@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QFrame
+from PyQt6.QtWidgets import QLabel, QPushButton
 from PyQt6.QtGui import QLinearGradient, QColor, QBrush, QPainter
 
 def create_styled_button(text, color, hover_color, border_color, click_action):
@@ -41,10 +41,10 @@ class StyledTitleLabel(QLabel):
     def paintEvent(self, event):
         painter = QPainter(self)
         gradient = QLinearGradient(0, 0, 0, self.height())
-        gradient.setColorAt(0, QColor("#0C0C0C"))
+        gradient.setColorAt(0, QColor("#212121"))
         gradient.setColorAt(0.33, QColor("#503090"))
         gradient.setColorAt(0.33, QColor("#553c9a"))
-        gradient.setColorAt(0.66, QColor("#553c9a"))
+        gradient.setColorAt(0.66, QColor("#4834D4"))
         gradient.setColorAt(0.66, QColor("#4834D4"))
         gradient.setColorAt(0.99, QColor("#4834D4"))
         painter.fillRect(self.rect(), QBrush(gradient))
