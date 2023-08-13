@@ -23,14 +23,17 @@ class MainWindow(QMainWindow):
         layout.addWidget(title_label)
 
         description_label = QLabel(
-            "<p style='font-size: 16px; text-align: center;'>Unlock the charm of your lock screen images on your desktop effortlessly.</p>"
-            "<p style='font-size: 12px; text-align: center;'>🎨 Created by Sourav Sadhukhan 👨🏻‍💻🖥️</p>"
-            "<hr />"
-            "<p style='font-size: 14px; text-align: left;'>Ever admired those captivating images on your lock screen? Now, you can gather them all in a special folder named '<em>Spotlight Images</em>' right on your desktop.</p>"
-            "<p style='font-size: 14px; text-align: left;'>No need to worry about image quality! This clever tool carefully selects images in landscape orientation, so they keep their original shape.</p>"
-            "<p style='font-size: 14px; text-align: left;'>And the best part? It effortlessly converts these images into the versatile JPEG format, giving each image a sophisticated name like '<strong>Spotlight_Timestamp.jpg</strong>'.</p>"
-            "<p style='font-size: 14px; text-align: left;'>With the Spotlight Image Copy Tool, you'll curate a delightful collection of images – perfectly organized and ready for your enjoyment. So, why wait? Just click the '<strong>Proceed</strong>' button below and let the enchantment begin!</p>",
-            self)
+        "<p style='font-size: 16px; text-align: center;'>Unlock the charm of Spotlight image collections in your storage effortlessly.</p>"
+        "<p style='font-size: 12px; text-align: center;'>🎨 Created by Sourav Sadhukhan 👨🏻‍💻🖥️</p>"
+        "<hr />"
+        "<p style='font-size: 14px; text-align: left;'>Ever admired those captivating images on your lock screen? Now, you can gather them all in a folder named '<em>Spotlight Images</em>' wherever you desire.</p>"
+        "<p style='font-size: 14px; text-align: left;'><em>Forget about repeatedly specifying the folder location</em> – this tool remembers your chosen destination. If you wish to modify it, simply click the <strong>Set location</strong> button below.</p>"
+        "<p style='font-size: 14px; text-align: left;'>Quality concerns? Put them to rest! The tool thoughtfully selects only landscape-oriented images, preserving their original dimensions. Plus, no worries about duplicate storage.</p>"
+        "<p style='font-size: 14px; text-align: left;'>And here's the icing on the cake: effortlessly create a zip archive of the entire Spotlight folder in your chosen path with just a single click of the <strong>Zip folder</strong> button.</p>"
+        "<p style='font-size: 14px; text-align: left;'>With the Spotlight Image Copy Tool, you'll curate a delightful collection of images – flawlessly organized and primed for your enjoyment. So, why wait? Simply click the '<strong>Proceed</strong>' button below and let the enchantment commence!</p>",
+        self)
+
+
         description_label.setWordWrap(True)
         description_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(description_label)
