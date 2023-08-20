@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
 
         layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        version_label = QLabel("Version 2.0.0", self)
+        version_label = QLabel("Version 2.1.0", self)
         version_label.setStyleSheet("font-size: 8px; color: #888;")
         version_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
         version_label.setMaximumHeight(16)  # Set maximum height for version_label

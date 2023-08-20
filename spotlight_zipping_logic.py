@@ -1,10 +1,11 @@
 import os
 from winreg import HKEY_CURRENT_USER, OpenKey, QueryValueEx
-from PyQt6.QtWidgets import  QMessageBox
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
 import json
 import zipfile
 
 CONFIG_FILE_PATH = os.path.join(os.environ["APPDATA"], "spotlight_config.json")
+ZIP_FILE_NAME = "Spotlight_Images"  # Change this to your desired zip file name
 
 def get_destination_folder():
     try:
@@ -13,35 +14,35 @@ def get_destination_folder():
             destination_folder = config.get("destination_folder")
             return destination_folder
     except (FileNotFoundError, json.JSONDecodeError):
-        return None
+            return None
 
-def create_zip():
+def create_zip(zip_file_path, source_folder):
     try:
-        destination_folder = get_destination_folder()
-        zip_file_name = os.path.basename(destination_folder) + ".zip"
-        with zipfile.ZipFile(zip_file_name, "w", zipfile.ZIP_DEFLATED) as zipf:
-            for foldername, subfolders, filenames in os.walk(destination_folder):
+        with zipfile.ZipFile(zip_file_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+            for foldername, subfolders, filenames in os.walk(source_folder):
                 for filename in filenames:
                     file_path = os.path.join(foldername, filename)
-                    arcname = os.path.relpath(file_path, destination_folder)
+                    arcname = os.path.relpath(file_path, source_folder)
                     zipf.write(file_path, arcname)
 
-        zip_file_path = os.path.join(destination_folder, zip_file_name)
         return zip_file_path
 
     except Exception as e:
         print(f"Error creating zip file: {e}")
         return None
 
-# You can call the create_zip function where you want to create the zip file, for example:
 def on_create_zip_clicked():
-    destination_folder = get_destination_folder()
+    source_folder = get_destination_folder()
 
-    if destination_folder:
-        zip_file_path = create_zip()
-        if zip_file_path:
-            QMessageBox.information(None, "Zip Created", f"Zip file created: {zip_file_path}")
+    if source_folder:
+        selected_path, _ = QFileDialog.getSaveFileName(None, "Save Zip File", source_folder + "\\" + ZIP_FILE_NAME + ".zip", "ZIP Files (*.zip)")
+        if selected_path:
+            zip_file_path = selected_path
+            if create_zip(zip_file_path, source_folder):
+                QMessageBox.information(None, "Zip Created", f"Zip file saved to: {zip_file_path}")
+            else:
+                QMessageBox.critical(None, "Error", "Failed to create zip file.")
         else:
-            QMessageBox.critical(None, "Error", "Failed to create zip file.")
+            QMessageBox.warning(None, "No Destination Path", "Please select a path to save the zip file.")
     else:
-        QMessageBox.warning(None, "No Destination Folder", "Please set the destination folder first.")
+        QMessageBox.warning(None, "No Source Folder", "Please set the source folder first.")
