@@ -10,7 +10,9 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Spotlight Image Copy Tool")
         self.setGeometry(150, 70, 750, 570)
-        self.setStyleSheet("background-color: #212121; color: #f0f0f0; border: 2px solid #212121;")
+        self.setStyleSheet("background-color: #f0f0f0; color: #212121")
+        if spotlight_logic.detect_system_theme():
+            self.setStyleSheet("background-color: #212121; color: #f0f0f0;")
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -43,21 +45,19 @@ class MainWindow(QMainWindow):
         button_frame.setStyleSheet("background-color: transparent;")
 
         btn_proceed = spotlight_styles.create_styled_button(
-            "🚀 Proceed", "#0d6efd", "#0e5ede", "#0d6efd", spotlight_logic.copy_spotlight_images
+            "🚀 Proceed", "#fff", "#0d6efd", spotlight_logic.copy_spotlight_images
         )
         button_layout.addWidget(btn_proceed)
 
         set_path_button = spotlight_styles.create_styled_button(
-            "📁 Set location", "transparent", "#0d6efd", "#0d6efd", spotlight_logic.set_destination_folder
+            "📁 Set location", "#0d6efd", 'transparent', spotlight_logic.set_destination_folder
         )
         button_layout.addWidget(set_path_button)
 
         zip_folder_button = spotlight_styles.create_styled_button(
-            "🗜️ Zip folder", "transparent", "#C07800", "#C07800", spotlight_zipping_logic.on_create_zip_clicked
+            "🗜️ Zip folder", "#C07800", 'transparent', spotlight_zipping_logic.on_create_zip_clicked
         )
         button_layout.addWidget(zip_folder_button)
-
-        layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
 
         layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
 
