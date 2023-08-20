@@ -11,7 +11,7 @@ def create_styled_button(text, textColor, color, click_action):
             font-weight: 600;
             background-color: {color};
             border: 1px solid;
-            border-color: {textColor};
+            border-color: { textColor if not "#fff" == textColor else "#1a85ff" };
             padding: 12px 40px;
             font-size: 16px;
             border-radius: 12px;
