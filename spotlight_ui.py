@@ -1,18 +1,35 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QPushButton
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QGraphicsBlurEffect
 import spotlight_logic
 import spotlight_zipping_logic
 import spotlight_styles
+
+class AeroFrame(QFrame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setStyleSheet("""
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 10px;
+        """)
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Spotlight Image Copy Tool")
-        self.setGeometry(150, 70, 750, 570)
-        self.setStyleSheet("background-color: #f0f0f0; color: #212121")
-        if spotlight_logic.detect_system_theme():
-            self.setStyleSheet("background-color: #212121; color: #f0f0f0;")
+        self.setGeometry(150, 70, 850, 650)
+        
+        # Get the system accent color
+        accent_color = QColor(QApplication.palette().color(QPalette.ColorRole.Highlight))
+
+        self.setStyleSheet("""
+            background: linear-gradient(135deg, #282c34, #1e1e1e);
+            color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        """)
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -20,53 +37,105 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         central_widget.setLayout(layout)
 
-        title_label = spotlight_styles.StyledTitleLabel("Welcome to the Spotlight Image Copy Tool!")
+        title_label = QLabel("Welcome to the Spotlight Image Copy Tool!")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setStyleSheet(f"""
+            font-size: 32px;
+            font-weight: 700;
+            color: {accent_color.name()};
+            margin-bottom: 20px;
+            padding: 10px;
+        """)
         layout.addWidget(title_label)
 
         description_label = QLabel(
-        "<p style='font-size: 16px; text-align: center;'>Unlock the charm of Spotlight image collections in your storage effortlessly.</p>"
-        "<p style='font-size: 12px; text-align: center;'>🎨 Created by Sourav Sadhukhan 👨🏻‍💻🖥️</p>"
-        "<hr />"
-        "<p style='font-size: 14px; text-align: left;'>Ever admired those captivating images on your lock screen? Now, you can gather them all in a folder named '<em>Spotlight Images</em>' wherever you desire.</p>"
-        "<p style='font-size: 14px; text-align: left;'><em>Forget about repeatedly specifying the folder location</em> – this tool remembers your chosen destination. If you wish to modify it, simply click the <strong>Set location</strong> button below.</p>"
-        "<p style='font-size: 14px; text-align: left;'>Quality concerns? Put them to rest! The tool thoughtfully selects only landscape-oriented images, preserving their original dimensions. Plus, no worries about duplicate storage.</p>"
-        "<p style='font-size: 14px; text-align: left;'>And here's the icing on the cake: effortlessly create a zip archive of the entire Spotlight folder in your chosen path with just a single click of the <strong>Zip folder</strong> button.</p>"
-        "<p style='font-size: 14px; text-align: left;'>With the Spotlight Image Copy Tool, you'll curate a delightful collection of images – flawlessly organized and primed for your enjoyment. So, why wait? Simply click the '<strong>Proceed</strong>' button below and let the enchantment commence!</p>",
+        "<p style='font-size: 18px; text-align: center; color: #e0e0e0;'>Discover and curate your favorite Spotlight images effortlessly with this powerful tool.</p>"
+        "<p style='font-size: 14px; text-align: center; color: #b0b0b0;'>🎨 Crafted by Sourav Sadhukhan 👨🏻‍💻🖥️</p>"
+        "<hr style='border: 1px solid #444;' />"
+        "<p style='font-size: 16px; text-align: left;'>Ever wondered how to gather those stunning images from your lock screen? Now, you can effortlessly collect them in a folder named '<em>Spotlight Images</em>' exactly where you want.</p>"
+        "<p style='font-size: 16px; text-align: left; color: #d0d0d0;'>No more hassle of repeatedly specifying the folder location – this tool remembers it for you. Need to change it? Just click the <strong>Set location</strong> button below.</p>"
+        "<p style='font-size: 16px; text-align: left;'>Concerned about image quality? Don’t be! The tool smartly picks only landscape-oriented images, keeping their original quality intact, and ensures no duplicates.</p>"
+        "<p style='font-size: 16px; text-align: left;'>And the best part? Create a zip archive of your entire Spotlight collection with a single click on the <strong>Zip folder</strong> button.</p>"
+        "<p style='font-size: 16px; text-align: left;'>Start curating your amazing image collection today! Hit the <strong>Proceed</strong> button and let the magic unfold!</p>",
         self)
-
-
         description_label.setWordWrap(True)
         description_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        description_label.setStyleSheet("""
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(40, 40, 40, 0.9);
+            margin-bottom: 30px;
+        """)
         layout.addWidget(description_label)
 
-        button_frame = QFrame()
+        button_frame = AeroFrame()
         button_layout = QHBoxLayout(button_frame)
         button_frame.setStyleSheet("background-color: transparent;")
 
-        btn_proceed = spotlight_styles.create_styled_button(
-            "🚀 Proceed", "#fff", "#0d6efd", spotlight_logic.copy_spotlight_images
-        )
-        button_layout.addWidget(btn_proceed)
+        def create_button(text, callback):
+            button = QPushButton(text)
+            button.setStyleSheet(f"""
+                background-color: {accent_color.name()};
+                color: #fff;
+                border: none;
+                padding: 15px 30px;
+                font-size: 16px;
+                font-weight: 600;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 2px solid {accent_color.name()};
+            """)
+            button.clicked.connect(callback)
+            button.setFixedSize(220, 60)  # Wider button size
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        set_path_button = spotlight_styles.create_styled_button(
-            "📁 Set location", "#0d6efd", 'transparent', spotlight_logic.set_destination_folder
-        )
+            # Add hover effect using a different method
+            def on_enter(event):
+                button.setStyleSheet(f"""
+                    background-color: {accent_color.darker(120).name()};
+                    color: #fff;
+                    border: none;
+                    padding: 15px 30px;
+                    font-size: 18px;
+                    font-weight: 600;
+                    border-radius: 12px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 2px solid {accent_color.darker(120).name()};
+                """)
+
+            def on_leave(event):
+                button.setStyleSheet(f"""
+                    background-color: {accent_color.name()};
+                    color: #fff;
+                    border: none;
+                    padding: 15px 30px;
+                    font-size: 18px;
+                    font-weight: 600;
+                    border-radius: 12px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 2px solid {accent_color.name()};
+                """)
+
+            button.installEventFilter(self)
+            button.eventFilter = lambda obj, event: on_enter(event) if event.type() == event.Type.Enter else on_leave(event)
+
+            return button
+
+        proceed_button = create_button("🚀 Let's Get Started!", spotlight_logic.copy_spotlight_images)
+        set_path_button = create_button("📁 Choose Location", spotlight_logic.set_destination_folder)
+        zip_folder_button = create_button("🗜️ Compress Folder", spotlight_zipping_logic.on_create_zip_clicked)
+
+        button_layout.addWidget(proceed_button)
         button_layout.addWidget(set_path_button)
-
-        zip_folder_button = spotlight_styles.create_styled_button(
-            "🗜️ Zip folder", "#C07800", 'transparent', spotlight_zipping_logic.on_create_zip_clicked
-        )
         button_layout.addWidget(zip_folder_button)
 
         layout.addWidget(button_frame, alignment=Qt.AlignmentFlag.AlignCenter)
 
         version_label = QLabel("Version 2.1.0", self)
-        version_label.setStyleSheet("font-size: 8px; color: #888;")
+        version_label.setStyleSheet("font-size: 10px; color: #888;")
         version_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
-        version_label.setMaximumHeight(16)  # Set maximum height for version_label
+        version_label.setMaximumHeight(20)
         layout.addWidget(version_label, alignment=Qt.AlignmentFlag.AlignRight)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
