@@ -7,21 +7,50 @@ from winreg import HKEY_CURRENT_USER, OpenKey, QueryValueEx
 import time
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 import json
+import glob
 
 # Global variable to store the destination folder path
 destination_folder = ""
 CONFIG_FILE_PATH = os.path.join(os.environ["APPDATA"], "spotlight_config.json")
 
 def get_spotlight_images():
-    spotlight_dir = os.path.join(os.getenv('USERPROFILE'), 'AppData', 'Local', 'Packages', 
-                                 'Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy', 
-                                 'LocalState', 'Assets')
-    return spotlight_dir
+    # Base paths to search for spotlight images
+    base_paths = [
+        os.path.join(os.getenv('USERPROFILE'), 'AppData', 'Local', 'Packages', 'Microsoft.Windows.ContentDeliveryManager_*', 'LocalState', 'Assets'),
+        os.path.join(os.getenv('USERPROFILE'), 'AppData', 'Local', 'Packages', 'MicrosoftWindows.Client.CBS_*', 'LocalCache', 'Microsoft', 'IrisService')
+    ]
+    
+    image_paths = []
+
+    for base_path in base_paths:
+        for folder in glob.glob(os.path.dirname(base_path)):
+            # Adjust the base path to include subfolders
+            for root, _, files in os.walk(folder):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    if is_image_file(file_path):  # Check if the file is an image
+                        image_paths.append(file_path)
+    
+    return image_paths
+
+def is_image_file(file_path):
+    try:
+        # Attempt to open the file as an image
+        with Image.open(file_path) as img:
+            # Check if the file is a valid image
+            return img.format in ["JPEG", "PNG", "BMP", "GIF", "TIFF"]
+    except Exception:
+        # If any error occurs (e.g., file not an image), return False
+        return False
 
 def is_image_ratio_valid(image_path):
-    image = Image.open(image_path)
-    width, height = image.size
-    return not (width / height == 9 / 16)
+    try:
+        image = Image.open(image_path)
+        width, height = image.size
+        return not (width / height == 9 / 16)
+    except Exception as e:
+        print(f"Error validating image ratio: {e}")
+        return False
 
 def convert_to_jpg(image_path):
     try:
@@ -63,20 +92,19 @@ def copy_spotlight_images():
         if not destination_folder:
             return
 
-    spotlight_dir = get_spotlight_images()
-    if not os.path.exists(spotlight_dir):
-        QMessageBox.critical(None, "Error", "Spotlight images directory not found.")
+    image_paths = get_spotlight_images()
+    if not image_paths:
+        QMessageBox.critical(None, "Error", "No spotlight images found.")
         return
     
     if not os.path.exists(destination_folder):
         os.makedirs(destination_folder)
 
     copied_files = []
-    for filename in os.listdir(spotlight_dir):
-        source_file = os.path.join(spotlight_dir, filename)
-        if os.path.isfile(source_file) and is_image_ratio_valid(source_file):
-            destination_file = os.path.join(destination_folder, filename)
-            new_destination = convert_to_jpg(source_file)
+    for image_path in image_paths:
+        if os.path.isfile(image_path) and is_image_ratio_valid(image_path):
+            destination_file = os.path.join(destination_folder, os.path.basename(image_path))
+            new_destination = convert_to_jpg(image_path)
             if new_destination:
                 shutil.copy2(new_destination, destination_file)
                 copied_files.append(destination_file)
